@@ -21,10 +21,13 @@ int orientationJarvis(Point p, Point q, Point r)
 } 
 
 // Prints convex hull of a set of n points. 
-std::vector<Point> convexHullJarvis(std::vector<Point> points[], int n) 
+std::vector<Point> convexHullJarvis(std::vector<Point> points, int n) 
 { 
 	// There must be at least 3 points 
-	if (n < 3) return; 
+	if (n < 3)
+	{
+		throw "Convex hull is impossible";
+	}		
 
 	// Initialize Result 
 	vector<Point> hull; 

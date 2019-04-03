@@ -9,8 +9,9 @@
 #include <sstream>
 
 #include "graham_scan.h"
-//#include "jarvis_march.h"
-//#include "quick_hull.h"
+#include "jarvis_march.h"
+#include "quick_hull.h"
+
 
 
 int main(int argc, char *argv[])
@@ -25,7 +26,7 @@ int main(int argc, char *argv[])
 	{
 		std::string algType = argv[1];
 		std::string dataFilename = argv[2];
-		std::string outputFile = "";
+		std::string outputFilename = "";
 		
 		
 		// Read data from file and format it into a vector of points
@@ -67,24 +68,56 @@ int main(int argc, char *argv[])
 		{
 			//call your Graham Scan algorithm to solve the problem
 			result = convexHullGraham(data, data.size());
-			outputFile = "hull_G.txt";
+			outputFilename = "hull_G.txt";
 		}
 		
 		else if (algType[0]=='J') 
 		{
 			//call your Javis March algorithm to solve the problem
-			outputFile = "hull_J.txt";
+			result = convexHullJarvis(data, data.size());
+			outputFilename = "hull_J.txt";
 		}
 		
 		else 
 		{ //default 
+			int i = 0;
+			iPair data_pair[data.size()];
+			
+			vector<Point>::iterator vector_iter;
+			for(vector_iter = data.begin(); vector_iter != data.end(); ++vector_iter)
+			{
+				iPair p;
+				(*vector_iter).x = p.first;
+				(*vector_iter).y = p.second;
+				data_pair[i] = p;
+				i++;
+			}
 			//call your Quickhull algorithm to solve the problem
-			outputFile = "hull_Q.txt";
+			outputFilename = "hull_Q.txt";
+			convexHullQuick(data_pair, data.size());
 		}
 		
 		stop = clock();
 		
 		std::cout << "Runtime for " << dataFilename << ": " << double(stop-start)/double(CLOCKS_PER_SEC) << "\n";
+		
+		// write the result to the output file
+		std::ofstream output_file;
+		output_file.open(outputFilename);
+		
+		std::size_t i;
+		std::size_t size = result.size();
+		for (i = 0; i < size; ++i)
+		{
+			Point point = result[i];
+			output_file << point.x << " " << point.y;
+			if (i != size - 1)
+			{
+				output_file << "\n";
+			}
+		}
+
+		output_file.close();
 
 		//write your convex hull to the outputFile (see class example for the format)
 		//you should be able to visulize your convex hull using the "ConvexHull_GUI" program.

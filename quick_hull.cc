@@ -1,10 +1,15 @@
 // C++ program to implement Quick Hull algorithm 
 // to find convex hull. 
 #include<bits/stdc++.h> 
+#include <vector>
+#include <utility>
+#include "Point.h"
 using namespace std; 
 
 // iPair is integer pairs 
-#define iPair pair<int, int> 
+#define iPair std::pair<int, int> 
+
+
 
 // Stores the result (points of convex hull) 
 set<iPair> hull; 
@@ -34,7 +39,7 @@ int lineDist(iPair p1, iPair p2, iPair p)
 
 // End points of line L are p1 and p2. side can have value 
 // 1 or -1 specifying each of the parts made by the line L 
-void convexHullQuick(iPair a[], int n, iPair p1, iPair p2, int side) 
+void quickHull(iPair a[], int n, iPair p1, iPair p2, int side) 
 { 
 	int ind = -1; 
 	int max_dist = 0; 
@@ -61,17 +66,17 @@ void convexHullQuick(iPair a[], int n, iPair p1, iPair p2, int side)
 	} 
 
 	// Recur for the two parts divided by a[ind] 
-	convexHullQuick(a, n, a[ind], p1, -findSide(a[ind], p1, p2)); 
-	convexHullQuick(a, n, a[ind], p2, -findSide(a[ind], p2, p1)); 
+	quickHull(a, n, a[ind], p1, -findSide(a[ind], p1, p2)); 
+	quickHull(a, n, a[ind], p2, -findSide(a[ind], p2, p1)); 
 } 
 
-void printHull(iPair a[], int n) 
+std::vector<Point> convexHullQuick(iPair a[], int n) 
 { 
 	// a[i].second -> y-coordinate of the ith point 
 	if (n < 3) 
 	{ 
-		cout << "Convex hull not possible\n"; 
-		return; 
+		throw "Convex hull not possible\n"; 
+		 
 	} 
 
 	// Finding the point with minimum and 
@@ -94,14 +99,22 @@ void printHull(iPair a[], int n)
 	// other side of line joining a[min_x] and 
 	// a[max_x] 
 	quickHull(a, n, a[min_x], a[max_x], -1); 
+	
+	std::vector<Point> result;
 
 	cout << "The points in Convex Hull are:\n"; 
 	while (!hull.empty()) 
 	{ 
-		cout << "(" <<( *hull.begin()).first << ", "
-			<< (*hull.begin()).second << ") "; 
+		Point p;
+		p.x = (*hull.begin()).first;
+		p.y = (*hull.begin()).second;
+		
+		//cout << "(" <<( *hull.begin()).first << ", " << (*hull.begin()).second << ") "; 
+		result.push_back(p);
 		hull.erase(hull.begin()); 
 	} 
+	
+	return result;
 } 
 
 /*
