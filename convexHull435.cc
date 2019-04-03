@@ -3,7 +3,7 @@
 // Standard libraries
 #include <string>
 #include <iostream>
-#include <stdlib.h> 
+#include <stdlib.h>
 #include <ctime>
 #include <fstream>
 #include <sstream>
@@ -20,27 +20,27 @@ int main(int argc, char *argv[])
 	if (argc < 3)
 	{
 		std::cout << "wrong format! should be \"a.exe algType dataFile\"";
-	}		
-		
+	}
+
 	else
 	{
 		std::string algType = argv[1];
 		std::string dataFilename = argv[2];
 		std::string outputFilename = "";
-		
-		
+
+
 		// Read data from file and format it into a vector of points
 		std::vector<Point> data;
-		
+
 		std::ifstream input_file;
 		input_file.open(dataFilename.c_str());
 		while (input_file.fail())
 		{
 			std::cout << "Error opening file, try again" << "\n";
 			std::cin >> dataFilename;
-			input_file.open(dataFilename.c_str());        
+			input_file.open(dataFilename.c_str());
 		}
-		
+
 		std::string line;
 		while(getline(input_file, line))
 		{
@@ -56,33 +56,33 @@ int main(int argc, char *argv[])
 				data.push_back(point);
 			}
 		}
-		
+
 		std::vector<Point> result;
-		
+
 		//read your data points from dataFile (see class example for the format)
 
 		clock_t start, stop;
 		start = clock();
-		
+
 		if (algType[0]=='G')
 		{
 			//call your Graham Scan algorithm to solve the problem
 			result = convexHullGraham(data, data.size());
 			outputFilename = "hull_G.txt";
 		}
-		
-		else if (algType[0]=='J') 
+
+		else if (algType[0]=='J')
 		{
 			//call your Javis March algorithm to solve the problem
 			result = convexHullJarvis(data, data.size());
 			outputFilename = "hull_J.txt";
 		}
-		
-		else 
-		{ //default 
+
+		else if (algType[0]=='Q')
+		{ //default
 			int i = 0;
 			iPair data_pair[data.size()];
-			
+
 			vector<Point>::iterator vector_iter;
 			for(vector_iter = data.begin(); vector_iter != data.end(); ++vector_iter)
 			{
@@ -96,15 +96,15 @@ int main(int argc, char *argv[])
 			outputFilename = "hull_Q.txt";
 			convexHullQuick(data_pair, data.size());
 		}
-		
+
 		stop = clock();
-		
-		std::cout << "Runtime for " << dataFilename << ": " << double(stop-start)/double(CLOCKS_PER_SEC) << "\n";
-		
+
+		std::cout << "Runtime for " << dataFilename << ": " << 1000 * (double(stop-start)/double(CLOCKS_PER_SEC)) << " milliseconds\n";
+
 		// write the result to the output file
 		std::ofstream output_file;
 		output_file.open(outputFilename);
-		
+
 		std::size_t i;
 		std::size_t size = result.size();
 		for (i = 0; i < size; ++i)
