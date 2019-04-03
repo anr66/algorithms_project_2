@@ -87,14 +87,17 @@ int main(int argc, char *argv[])
 			for(vector_iter = data.begin(); vector_iter != data.end(); ++vector_iter)
 			{
 				iPair p;
-				(*vector_iter).x = p.first;
-				(*vector_iter).y = p.second;
+				p.first = (*vector_iter).x;
+				p.second = (*vector_iter).y;
+				//(*vector_iter).x = p.first;
+				//(*vector_iter).y = p.second;
 				data_pair[i] = p;
 				i++;
 			}
 			//call your Quickhull algorithm to solve the problem
+			start = clock();
 			outputFilename = "hull_Q.txt";
-			convexHullQuick(data_pair, data.size());
+			result = convexHullQuick(data_pair, data.size());
 		}
 
 		stop = clock();
