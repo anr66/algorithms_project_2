@@ -2,19 +2,17 @@
 // https://www.geeksforgeeks.org/orientation-3-ordered-points/ 
 // for explanation of orientation() 
 #include <bits/stdc++.h> 
-using namespace std; 
+#include <vector>
+#include "Point.h"
 
-struct Point 
-{ 
-	int x, y; 
-}; 
+using namespace std; 
 
 // To find orientation of ordered triplet (p, q, r). 
 // The function returns following values 
 // 0 --> p, q and r are colinear 
 // 1 --> Clockwise 
 // 2 --> Counterclockwise 
-int orientation(Point p, Point q, Point r) 
+int orientationJarvis(Point p, Point q, Point r) 
 { 
 	int val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y); 
 
@@ -23,7 +21,7 @@ int orientation(Point p, Point q, Point r)
 } 
 
 // Prints convex hull of a set of n points. 
-void convexHullJarvis(Point points[], int n) 
+std::vector<Point> convexHullJarvis(std::vector<Point> points[], int n) 
 { 
 	// There must be at least 3 points 
 	if (n < 3) return; 
@@ -54,10 +52,10 @@ void convexHullJarvis(Point points[], int n)
 		q = (p+1)%n; 
 		for (int i = 0; i < n; i++) 
 		{ 
-		// If i is more counterclockwise than current q, then 
-		// update q 
-		if (orientation(points[p], points[i], points[q]) == 2) 
-			q = i; 
+			// If i is more counterclockwise than current q, then 
+			// update q 
+			if (orientationJarvis(points[p], points[i], points[q]) == 2) 
+				q = i; 
 		} 
 
 		// Now q is the most counterclockwise with respect to p 
@@ -68,8 +66,10 @@ void convexHullJarvis(Point points[], int n)
 	} while (p != l); // While we don't come to first point 
 
 	// Print Result 
-	for (int i = 0; i < hull.size(); i++) 
-		cout << "(" << hull[i].x << ", " << hull[i].y << ")\n"; 
+	//for (int i = 0; i < hull.size(); i++) 
+	//	cout << "(" << hull[i].x << ", " << hull[i].y << ")\n"; 
+
+	return hull;
 } 
 
 /*

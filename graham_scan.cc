@@ -4,12 +4,10 @@
 #include <iostream> 
 #include <stack> 
 #include <stdlib.h> 
-using namespace std; 
+#include <vector>
+#include "Point.h"
 
-struct Point 
-{ 
-	int x, y; 
-}; 
+using namespace std;  
 
 // A global point needed for sorting points with reference 
 // to the first point Used in compare function of qsort() 
@@ -46,7 +44,7 @@ int distSq(Point p1, Point p2)
 // 0 --> p, q and r are colinear 
 // 1 --> Clockwise 
 // 2 --> Counterclockwise 
-int orientation(Point p, Point q, Point r) 
+int orientationGraham(Point p, Point q, Point r) 
 { 
 	int val = (q.y - p.y) * (r.x - q.x) - 
 			(q.x - p.x) * (r.y - q.y); 
@@ -63,7 +61,7 @@ int compare(const void *vp1, const void *vp2)
 	Point *p2 = (Point *)vp2; 
 
 	// Find orientation 
-	int o = orientation(p0, *p1, *p2); 
+	int o = orientationGraham(p0, *p1, *p2); 
 	if (o == 0) 
 		return (distSq(p0, *p2) >= distSq(p0, *p1))? -1 : 1; 
 
@@ -71,7 +69,7 @@ int compare(const void *vp1, const void *vp2)
 } 
 
 // Prints convex hull of a set of n points. 
-void convexHullGraham(Point points[], int n) 
+std::vector<Point> convexHullGraham(std::vector<Point> points, int n) 
 { 
 	// Find the bottommost point 
 	int ymin = points[0].y, min = 0; 
@@ -105,7 +103,7 @@ void convexHullGraham(Point points[], int n)
 	{ 
 		// Keep removing i while angle of i and i+1 is same 
 		// with respect to p0 
-		while (i < n-1 && orientation(p0, points[i], points[i+1]) == 0) 
+		while (i < n-1 && orientationGraham(p0, points[i], points[i+1]) == 0) 
 			i++; 
 
 
@@ -115,7 +113,10 @@ void convexHullGraham(Point points[], int n)
 
 	// If modified array of points has less than 3 points, 
 	// convex hull is not possible 
-	if (m < 3) return; 
+	if (m < 3)
+	{
+		throw "Convex hull is not possible";
+	}		
 
 	// Create an empty stack and push first three points 
 	// to it. 
@@ -130,18 +131,23 @@ void convexHullGraham(Point points[], int n)
 		// Keep removing top while the angle formed by 
 		// points next-to-top, top, and points[i] makes 
 		// a non-left turn 
-		while (orientation(nextToTop(S), S.top(), points[i]) != 2) 
+		while (orientationGraham(nextToTop(S), S.top(), points[i]) != 2) 
 			S.pop(); 
 		S.push(points[i]); 
-	} 
+	}
+
+	std::vector<Point> result;
 
 	// Now stack has the output points, print contents of stack 
 	while (!S.empty()) 
 	{ 
 		Point p = S.top(); 
-		cout << "(" << p.x << ", " << p.y <<")" << endl; 
+		//cout << "(" << p.x << ", " << p.y <<")" << endl; 
+		result.push_back(p);
 		S.pop(); 
 	} 
+	
+	return result;
 } 
 
 /*
